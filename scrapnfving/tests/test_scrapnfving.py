@@ -12,8 +12,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import pbr.version
+"""
+test_scrapnfving
+----------------------------------
+
+Tests for `scrapnfving` module.
+"""
+
+from scrapnfving.tests import base
 
 
-__version__ = pbr.version.VersionInfo(
-    'gerrit-dashboard-nfv').version_string()
+class TestScrapnfving(base.TestCase):
+
+    def test_something(self):
+        pass

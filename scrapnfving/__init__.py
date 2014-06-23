@@ -12,17 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""
-test_gerrit-dashboard-nfv
-----------------------------------
-
-Tests for `gerrit-dashboard-nfv` module.
-"""
-
-from gerrit-dashboard-nfv.tests import base
+import pbr.version
 
 
-class TestGerrit-dashboard-nfv(base.TestCase):
-
-    def test_something(self):
-        pass
+__version__ = pbr.version.VersionInfo(
+    'scrapnfving').version_string()
