@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = gerrit-dashboard-nfv
+omit = gerrit-dashboard-nfv/tests/*,gerrit-dashboard-nfv/openstack/*
+
+[report]
+ignore-errors = True
