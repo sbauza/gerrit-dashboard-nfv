@@ -1,7 +1,7 @@
 [dashboard]
 title = NFV Inbox
 description = NFV Review Inbox
-foreach = (project:openstack/nova OR project:openstack/python-novaclient OR project:openstack/nova-specs OR project:openstack/neutron OR project:openstack/python-neutronclient OR project:openstack/neutron-specs) status:open message:nfvimpact NOT label:Code-Review<=-2
+foreach = status:open
 
 [section "My Patches Requiring Attention"]
 query = owner:self (label:Verified-1,jenkins OR label:Code-Review-1 OR label:Workflow<=-1)

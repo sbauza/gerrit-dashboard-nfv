@@ -13,17 +13,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Set of tools for connecting to Launchpad."""
+
 from os import path
 
 from launchpadlib import launchpad
+from oslo.config import cfg
 from six.moves import urllib
 
-"""Set of tools for connecting to Launchpad."""
+CONF = cfg.CONF
+
+opts = [
+    cfg.StrOpt('client',
+               default='just testing',
+               help='Launchpad client name'),
+    cfg.StrOpt('instance',
+               default='production',
+               help='Launchpad webservice instance'),
+    cfg.StrOpt('api_version',
+               default='devel',
+               help='Version of the LaunchpadAPI'),
+]
+
+CONF.register_opts(opts, 'launchpad')
 
 
 class LaunchpadConnection(object):
-    def __init__(self):
-        self.lp = connectLaunchpad()
+    def __init__(self, anon=True):
+        self.lp = connectLaunchpad(anon)
 
     def _get_blueprint(self, url):
         spec = urllib.parse.urlparse(url)[2]
@@ -49,21 +66,21 @@ class LaunchpadConnection(object):
             return None
 
 
-def connectLaunchpad():
+def connectLaunchpad(anonymously=True):
     """
-    Connect to Launchpad anonymously. At the time of writing it was not
-    clear whether there was a formally documented way for a batch process
-    to authenticate with the Launchpad API.
+    Connect to Launchpad.
 
-    Note that the "devel" version of the API is used, rather than "1.0",
-    because it provides a much richer representation of the specification
-    (blueprint) objects.
+    :param anonymously: Connect without credentials
+
+    :returns: a launchpad connection object
     """
 
-    # Currently use anonymous connection, unclear how to authenticate a batch
-    # process more robustly.
-    cachedir = "%s/.launchpadlib/cache/" % path.expanduser("~")
-    return launchpad.Launchpad.login_anonymously('just testing',
-                                                 'production',
-                                                 cachedir,
-                                                 version="devel")
+    if anonymously:
+        cachedir = "%s/.launchpadlib/cache/" % path.expanduser("~")
+        return launchpad.Launchpad.login_anonymously(
+            CONF.launchpad.client,
+            CONF.launchpad.instance,
+            cachedir,
+            version=CONF.launchpad.api_version)
+    else:
+        raise NotImplementedError

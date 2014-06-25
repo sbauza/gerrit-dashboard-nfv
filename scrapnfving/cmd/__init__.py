@@ -19,12 +19,14 @@ from oslo.config import cfg
 
 from scrapnfving import scraping
 from scrapnfving import sketching
-# from scrapnfving import journaling
+from scrapnfving import journaling
 
 CONF = cfg.CONF
 opts = [
     cfg.StrOpt('wiki_url', default='https://wiki.openstack.org/wiki/Teams/NFV',
                help='Wiki URL to scrap from'),
+    cfg.StrOpt('dashboard_name', default='nfv.dash',
+               help='Defined dashboard file'),
 ]
 
 CONF.register_cli_opts(opts)
@@ -34,12 +36,11 @@ def main():
     cfg.CONF(sys.argv[1:], project='scrapnfving', prog='main')
     scraper = scraping.Scraper(url=CONF.wiki_url)
     urls = scraper.scrap()
-    print "%s URLs found, decoding..." % len(urls)
     sketcher = sketching.Sketcher()
     reviews = sketcher.sketch(urls)
-    print reviews
-    # gerrit_url = journaling.journal(reviews)
-    # print "URL: %s" % gerrit_url
+    gerrit_url = journaling.journal(review_urls=reviews,
+                                    dash=CONF.dashboard_name)
+    print "URL: %s" % gerrit_url
 
 if __name__ == '__main__':
     sys.exit(main())

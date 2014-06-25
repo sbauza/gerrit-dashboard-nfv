@@ -22,8 +22,8 @@ from scrapnfving.utils import launchpad
 CONF = cfg.CONF
 
 opts = [
-    cfg.StrOpt('gerrit_pattern',
-               default="https://review.openstack.org/#q,topic:bp/[^,]*,n,z",
+    cfg.StrOpt('pattern_reviews',
+               default="http[s]?://review.openstack.org/[0-9]+",
                help='Regex pattern for searching review topics')
 ]
 
@@ -32,15 +32,15 @@ CONF.register_opts(opts, 'gerrit')
 
 class Sketcher(object):
     def __init__(self):
-        self.lp = launchpad.LaunchpadConnection()
-        self.pattern = re.compile(CONF.gerrit.gerrit_pattern)
-
-        self.gerrit_urls = set()
+        self.lp = launchpad.LaunchpadConnection(anon=True)
+        # NOTE(sbauza): We can also track Gerrit topics but they are less
+        #               relevant because of some typos in topic names
+        self.re_reviews = re.compile(CONF.gerrit.pattern_reviews)
+        self.reviews = set()
 
     def sketch(self, urls):
         for url in urls:
             bp_wb = self.lp.get_bp_whiteboard(url)
             if bp_wb:
-                gerrit_urls = self.pattern.findall(bp_wb)
-                self.gerrit_urls.update(gerrit_urls)
-        return self.gerrit_urls
+                self.reviews.update(self.re_reviews.findall(bp_wb))
+        return self.reviews

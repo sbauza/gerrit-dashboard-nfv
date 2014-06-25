@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Shamely copied from stackforge/gerrit-dash-creator."""
+"""Shamely copied/adapted from stackforge/gerrit-dash-creator."""
 
 import fileinput
 import re
@@ -21,12 +21,12 @@ import re
 from six.moves import urllib
 
 
-def escape_comma(buff):
+def _escape_comma(buff):
     """Because otherwise Firefox is a sad panda."""
     return buff.replace(',', '%2c')
 
 
-def get_title(fname):
+def _get_title(fname):
     title = ""
     foreach = ""
     for line in fileinput.input(fname):
@@ -36,12 +36,12 @@ def get_title(fname):
 
         m = re.match("foreach = (.+)", line)
         if m:
-            foreach = escape_comma(m.group(1))
+            foreach = _escape_comma(m.group(1))
     fileinput.close()
     return title, foreach
 
 
-def get_sections(fname):
+def _get_sections(fname):
     sections = []
     sname = None
     for line in fileinput.input(fname):
@@ -51,25 +51,33 @@ def get_sections(fname):
         elif sname:
             m = re.match("query = (.+)", line)
             if m:
-                query = escape_comma(m.group(1))
+                query = _escape_comma(m.group(1))
 
                 sections.append({'title': sname, 'query': query})
     fileinput.close()
     return sections
 
 
-def gen_url(title, foreach, sections):
+def _gen_url(title, foreach, sections):
     base = 'https://review.openstack.org/#/dashboard/?'
-    base += urllib.urlencode({'title': title, 'foreach': foreach})
+    base += urllib.parse.urlencode({'title': title, 'foreach': foreach})
     base += '&'
-    encoded = [urllib.urlencode({x['title']: x['query']}) for x in sections]
+    encoded = [urllib.parse.urlencode(
+        {x['title']: x['query']}) for x in sections]
     base += '&'.join(encoded)
     return base
 
 
-def gerrit_dashboard(dash):
-    title, foreach = get_title(dash)
-    sections = get_sections(dash)
-    url = gen_url(title, foreach, sections)
-    print("URL for %s" % title)
-    print(url)
+def gerrit_dashboard(dash, extra_foreach=None):
+    """Generates a custom Gerrit dashboard.
+
+    :param dash: path of the custom defined dashboard file
+    :param extra_foreach: extra search parameters for the dashboard
+    :returns: a long URL string
+    """
+    title, foreach = _get_title(dash)
+    if extra_foreach:
+        foreach += extra_foreach
+    sections = _get_sections(dash)
+    url = _gen_url(title, foreach, sections)
+    return url
