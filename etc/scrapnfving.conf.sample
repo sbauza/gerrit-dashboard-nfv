@@ -1,0 +1,61 @@
+[DEFAULT]
+
+#
+# Options defined in scrapnfving.cmd
+#
+
+# Wiki URL to scrap from (string value)
+#wiki_url=https://wiki.openstack.org/wiki/Teams/NFV
+
+# Defined dashboard file (string value)
+#dashboard_name=nfv.dash
+
+
+[gerrit]
+
+#
+# Options defined in scrapnfving.journaling
+#
+
+# Regex pattern for extracting review IDs (string value)
+#matching_reviews=http[s]?://review.openstack.org/([0-9]+)
+
+
+#
+# Options defined in scrapnfving.sketching
+#
+
+# Regex pattern for searching review topics (string value)
+#pattern_reviews=http[s]?://review.openstack.org/[0-9]+
+
+
+[launchpad]
+
+#
+# Options defined in scrapnfving.utils.launchpad
+#
+
+# Launchpad client name (string value)
+#client=just testing
+
+# Launchpad webservice instance (string value)
+#instance=production
+
+# Version of the LaunchpadAPI (string value)
+#api_version=devel
+
+
+[parser]
+
+#
+# Options defined in scrapnfving.scraping
+#
+
+# Strict HTML parsing (boolean value)
+#strict=false
+
+# Column name for wikitables containing blueprints (string
+# value)
+#th_name=Blueprint(s)
+
+

@@ -31,9 +31,6 @@ CONF.register_opts(opts, 'gerrit')
 
 
 def journal(review_urls, dash):
-    dash_file = CONF.find_file(dash)
-    if not dash_file:
-        raise cfg.ConfigFilesNotFoundError((dash,))
     re_reviews_ids = re.compile(CONF.gerrit.matching_reviews)
     reviews = []
     for review_url in review_urls:
@@ -41,4 +38,4 @@ def journal(review_urls, dash):
         if m:
             reviews.append(m.group(1))
     extra_foreach = ' (%s)' % ' OR '.join(reviews)
-    return gerritdash.gerrit_dashboard(dash_file, extra_foreach=extra_foreach)
+    return gerritdash.gerrit_dashboard(dash, extra_foreach=extra_foreach)

@@ -34,12 +34,15 @@ CONF.register_cli_opts(opts)
 
 def main():
     cfg.CONF(sys.argv[1:], project='scrapnfving', prog='main')
+    dash_file = CONF.find_file(CONF.dashboard_name)
+    if not dash_file:
+        raise cfg.ConfigFilesNotFoundError((CONF.dashboard_name,))
     scraper = scraping.Scraper(url=CONF.wiki_url)
     urls = scraper.scrap()
     sketcher = sketching.Sketcher()
     reviews = sketcher.sketch(urls)
     gerrit_url = journaling.journal(review_urls=reviews,
-                                    dash=CONF.dashboard_name)
+                                    dash=dash_file)
     print "URL: %s" % gerrit_url
 
 if __name__ == '__main__':
