@@ -10,23 +10,18 @@
 # Defined dashboard file (string value)
 #dashboard_name=nfv.dash
 
+# Shorten the result URL or not (boolean value)
+#shorten=true
+
 
 [gerrit]
-
-#
-# Options defined in scrapnfving.journaling
-#
-
-# Regex pattern for extracting review IDs (string value)
-#matching_reviews=http[s]?://review.openstack.org/([0-9]+)
-
 
 #
 # Options defined in scrapnfving.sketching
 #
 
 # Regex pattern for searching review topics (string value)
-#pattern_reviews=http[s]?://review.openstack.org/[0-9]+
+#pattern_reviews=http[s]?://review.openstack.org/(?:#/c/)?([0-9]+)
 
 
 [launchpad]
@@ -45,6 +40,19 @@
 #api_version=devel
 
 
+[local_file]
+
+#
+# Options defined in scrapnfving.utils.shorteningservice.local
+#
+
+# Page to update (string value)
+#file=/var/www/html/index.html
+
+# Jinja2 template for generating the page (string value)
+#template=index.html.jinja2
+
+
 [parser]
 
 #
@@ -57,5 +65,44 @@
 # Column name for wikitables containing blueprints (string
 # value)
 #th_name=Blueprint(s)
+
+
+[shortening]
+
+#
+# Options defined in scrapnfving.journaling
+#
+
+# Short URL to update (string value)
+#short_url=http://tiny.cc/fipdix
+
+
+#
+# Options defined in scrapnfving.utils.shorteningservice
+#
+
+# External Shortening API (string value)
+#api=local_file
+
+
+[tiny_cc]
+
+#
+# Options defined in scrapnfving.utils.shorteningservice.tiny_cc
+#
+
+# Tiny.cc login (string value)
+#login=mylogin
+
+# Tiny.cc API key (see http://tiny.cc/api-docs) (string value)
+#apikey=mysecretapikey
+
+# Tiny.cc API version (see http://tiny.cc/api-docs) (string
+# value)
+#version=2.0.3
+
+# Tiny.cc Short URL hash (see http://tiny.cc/api-docs) (string
+# value)
+#hash=<None>
 
 

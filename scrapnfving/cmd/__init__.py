@@ -27,6 +27,8 @@ opts = [
                help='Wiki URL to scrap from'),
     cfg.StrOpt('dashboard_name', default='nfv.dash',
                help='Defined dashboard file'),
+    cfg.BoolOpt('shorten', default=True,
+                help='Shorten the result URL or not'),
 ]
 
 CONF.register_cli_opts(opts)
@@ -37,12 +39,14 @@ def main():
     dash_file = CONF.find_file(CONF.dashboard_name)
     if not dash_file:
         raise cfg.ConfigFilesNotFoundError((CONF.dashboard_name,))
+
     scraper = scraping.Scraper(url=CONF.wiki_url)
     urls = scraper.scrap()
     sketcher = sketching.Sketcher()
     reviews = sketcher.sketch(urls)
-    gerrit_url = journaling.journal(review_urls=reviews,
-                                    dash=dash_file)
+    journaler = journaling.Journaler(CONF.shorten)
+    gerrit_url = journaler.journal(reviews=reviews,
+                                   dash=dash_file)
     print "URL: %s" % gerrit_url
 
 if __name__ == '__main__':

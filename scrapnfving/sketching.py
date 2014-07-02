@@ -23,7 +23,7 @@ CONF = cfg.CONF
 
 opts = [
     cfg.StrOpt('pattern_reviews',
-               default="http[s]?://review.openstack.org/[0-9]+",
+               default="http[s]?://review.openstack.org/(?:#/c/)?([0-9]+)",
                help='Regex pattern for searching review topics')
 ]
 

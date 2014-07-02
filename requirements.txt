@@ -4,3 +4,4 @@ pbr>=0.5.21,<1.0
 six>=1.7.0
 stevedore>=0.14
 Babel>=0.9.6
+Jinja2

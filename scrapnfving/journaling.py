@@ -13,29 +13,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
-
 from oslo.config import cfg
 
 from scrapnfving.utils import gerritdash
+from scrapnfving.utils import shorteningservice
 
 CONF = cfg.CONF
 
 opts = [
-    cfg.StrOpt('matching_reviews',
-               default="http[s]?://review.openstack.org/([0-9]+)",
-               help='Regex pattern for extracting review IDs')
+    cfg.StrOpt('short_url',
+               default='http://tiny.cc/fipdix',
+               help='Short URL to update'),
 ]
 
-CONF.register_opts(opts, 'gerrit')
+CONF.register_opts(opts, 'shortening')
 
 
-def journal(review_urls, dash):
-    re_reviews_ids = re.compile(CONF.gerrit.matching_reviews)
-    reviews = []
-    for review_url in review_urls:
-        m = re_reviews_ids.match(review_url)
-        if m:
-            reviews.append(m.group(1))
-    extra_foreach = ' (%s)' % ' OR '.join(reviews)
-    return gerritdash.gerrit_dashboard(dash, extra_foreach=extra_foreach)
+class Journaler(object):
+
+    def __init__(self, shorten):
+        self.shorten = shorten
+        if self.shorten:
+            self.shorter = shorteningservice.ShorteningService()
+
+    def journal(self, reviews, dash):
+        extra_foreach = ' (%s)' % ' OR '.join(reviews)
+        dash_url = gerritdash.gerrit_dashboard(dash,
+                                               extra_foreach=extra_foreach)
+
+        print dash_url
+        if self.shorten:
+            dash_url = self.shorter.update(CONF.shortening.short_url, dash_url)
+        return dash_url
