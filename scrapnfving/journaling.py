@@ -40,8 +40,6 @@ class Journaler(object):
         extra_foreach = ' (%s)' % ' OR '.join(reviews)
         dash_url = gerritdash.gerrit_dashboard(dash,
                                                extra_foreach=extra_foreach)
-
-        print dash_url
         if self.shorten:
             dash_url = self.shorter.update(CONF.shortening.short_url, dash_url)
         return dash_url
