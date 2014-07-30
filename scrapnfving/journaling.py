@@ -27,7 +27,7 @@ CONF = cfg.CONF
 
 opts = [
     cfg.StrOpt('file',
-               default='./etc/index.html',
+               default='/var/www/html/dashboard.html',
                help='Page to update'),
     cfg.StrOpt('template',
                default='index.html.jinja2',

@@ -170,7 +170,7 @@
 #
 
 # Page to update (string value)
-#file=./etc/index.html
+#file=/var/www/html/dashboard.html
 
 # Jinja2 template for generating the page (string value)
 #template=index.html.jinja2
