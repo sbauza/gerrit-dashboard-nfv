@@ -17,9 +17,10 @@ import sys
 
 from oslo.config import cfg
 
+from scrapnfving import journaling
+from scrapnfving.openstack.common import log as logging
 from scrapnfving import scraping
 from scrapnfving import sketching
-from scrapnfving import journaling
 
 CONF = cfg.CONF
 opts = [
@@ -33,8 +34,24 @@ opts = [
 
 CONF.register_cli_opts(opts)
 
+LOG = logging.getLogger(__name__)
+
+_LOG_SETUP = False
+
+
+def prepare_logger():
+    global _LOG_SETUP
+
+    if not _LOG_SETUP:
+        cfg.set_defaults(logging.log_opts,
+                         default_log_levels=['scrapnfving=INFO',
+                                             ])
+        logging.setup('scrapnfving')
+        _LOG_SETUP = True
+
 
 def main():
+    prepare_logger()
     cfg.CONF(sys.argv[1:], project='scrapnfving', prog='main')
     dash_file = CONF.find_file(CONF.dashboard_name)
     if not dash_file:
@@ -44,10 +61,10 @@ def main():
     urls = scraper.scrap()
     sketcher = sketching.Sketcher()
     reviews = sketcher.sketch(urls)
-    journaler = journaling.Journaler(CONF.shorten)
+    journaler = journaling.Journaler()
     gerrit_url = journaler.journal(reviews=reviews,
                                    dash=dash_file)
-    print "URL: %s" % gerrit_url
+    LOG.info("URL: %s" % gerrit_url)
 
 if __name__ == '__main__':
     sys.exit(main())

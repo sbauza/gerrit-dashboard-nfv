@@ -21,6 +21,8 @@ from launchpadlib import launchpad
 from oslo.config import cfg
 from six.moves import urllib
 
+from scrapnfving.openstack.common import log as logging
+
 CONF = cfg.CONF
 
 opts = [
@@ -36,6 +38,8 @@ opts = [
 ]
 
 CONF.register_opts(opts, 'launchpad')
+
+LOG = logging.getLogger(__name__)
 
 
 class LaunchpadConnection(object):
@@ -62,7 +66,7 @@ class LaunchpadConnection(object):
         if bp:
             return getattr(bp, 'whiteboard')
         else:
-            print "ERROR: %s is not a blueprint" % url
+            LOG.warning("%s is not a blueprint" % url)
             return None
 
 

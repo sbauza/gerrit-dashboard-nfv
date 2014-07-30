@@ -13,27 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from oslo.config import cfg
-import stevedore
+
 
 CONF = cfg.CONF
-
 opts = [
-    cfg.StrOpt('api',
-               default='local_file',
-               help='External Shortening API',
-               choices=['tiny_cc', 'local_file']),
+    cfg.StrOpt('wiki_url', default='https://wiki.openstack.org/wiki/Teams/NFV',
+               help='Wiki URL to scrap from'),
+    cfg.StrOpt('dashboard_name', default='nfv.dash',
+               help='Defined dashboard file'),
+    cfg.BoolOpt('shorten', default=True,
+                help='Shorten the result URL or not'),
 ]
 
-CONF.register_opts(opts, 'shortening')
+CONF.register_cli_opts(opts)
 
 
-class ShorteningService(object):
-    def __init__(self):
-        self.manager = stevedore.driver.DriverManager(
-            namespace='scrapnfving.utils.shorteningservice',
-            name=CONF.shortening.api,
-            invoke_on_load=True)
+def main():
+    cfg.CONF(sys.argv[1:], project='scrapnfving', prog='main')
+    # TODO(sbauza): Pecan WSGI app
 
-    def __getattr__(self, name):
-        return getattr(self.manager.driver, name)
+if __name__ == '__main__':
+    sys.exit(main())

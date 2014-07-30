@@ -30,7 +30,7 @@ modify dashboard_name value in scrapnfving.conf
 Usage
 -----
 
-nfvscraper --config-dir <location_of_repo>/etc
+nfv-engine --config-dir <location_of_repo>/etc
 
 You can also copy files in etc/ into /etc/scrapnfving and only run :
 nfvscraper

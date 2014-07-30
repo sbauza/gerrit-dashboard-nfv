@@ -1,7 +1,128 @@
 <html>
+<head>
+    <title>{{ title }}</title>
+<style id="gerrit_sitecss" type="text/css">
+body,table td,select{
+    font-family:sans-serif;
+    font-size:small;
+}
+a,a:visited {color: #264D69 !important; text-decoration: none;}
+a:hover {color: #000 !important; text-decoration: underline}
+.title{
+    font-size: 16pt;
+    white-space: nowrap;
+}
+.dataHeader{
+    border:1px solid #ffffff;
+    padding:2px 6px 1px;
+    background-color:#eef3f5;
+    font-style:italic;
+    white-space:nowrap;
+    color:#264d69;
+}
+.dataCell {
+    padding-left: 5px;
+    padding-right: 5px;
+    border-right: 1px solid rgb(238, 243, 245);
+    border-bottom: 1px solid rgb(238, 243, 245);
+    vertical-align: middle;
+    height: 20px;
+}
+.sectionHeader{
+    border-top:8px solid #ffffff;
+    padding:2px 6px 1px;
+    background-color:#eef3f5;
+    white-space:nowrap;
+    font-weight:bold;
+    color:#264d69;
+}
+.emptySection {
+    border-left: 1px solid rgb(238, 243, 245);
+    border-right: 1px solid rgb(238, 243, 245);
+    border-bottom: 1px solid rgb(238, 243, 245);
+    font-style: italic;
+    padding-left: 25px;
+}
+.iconHeader{
+    border-top:1px solid #ffffff;
+    border-bottom:1px solid #ffffff;
+    background-color:#eef3f5;
+}
+tr:nth-child(2n) {
+    background: none repeat scroll 0% 0% rgb(245, 245, 255);
+}
+.dataCell.negscore {
+    color: red;
+}
+.dataCell.posscore {
+    color: rgb(8, 164, 0);
+}
+</style>
+</head>
 <body>
-<script>
-window.location.href="{{ url }}";
-</script>
+<div class="title">
+    <span class="title">
+        {{ title }}
+    </span>
+</div>
+<div>
+<table class="dashboard" style="width: 100%;">
+<colgroup><col ></col></colgroup>
+<tbody>
+    <tr>
+        <td class="iconHeader"></td>
+        <td class="dataHeader">Subject</td>
+        <td class="dataHeader">Status</td>
+        <td class="dataHeader">Owner</td>
+        <td class="dataHeader">Project</td>
+        <td class="dataHeader">Branch</td>
+        <td class="dataHeader">Updated</td>
+        <td class="dataHeader" title="Code-Review">CR</td>
+        <td class="dataHeader" title="Verified">V</td>
+        <td class="dataHeader" title="Workflow">W</td>
+    </tr>
+    {% for section in sections %}
+    <tr>
+        <td class="sectionHeader" colspan="10">
+            <a href="{{ section['url'] }}">{{ section['title'] }}</a>
+        </td>
+    </tr>
+    {% if section['reviews']|length == 0 %}
+    <tr>
+        <td class="emptySection" colspan="10">(None)</td>
+    </tr>
+    {% else %}
+    {% for review in section['reviews'] %}
+    <tr>
+        <td class="iconCell leftMostCell"></td>
+        <td class="dataCell">
+            <a href="{{ review['url'] }}">{{ review['subject'] }}</a>
+        </td>
+        <td class="dataCell"></td>
+        <td class="dataCell">
+            <a href="{{ review['owner_url'] }}">{{ review['owner'] }}</a>
+        </td>
+        <td class="dataCell">{{ review['project'] }}</td>
+        <td class="dataCell">
+            <a href="{{ review['branch_url'] }}">{{ review['branch'] }}</a>
+        </td>
+        <td class="dataCell">{{ review['updated'] }}</td>
+        <td class="dataCell {{ review['cr_note'] }}">
+            {{ review['code-review'] }}
+        </td>
+        <td class="dataCell {{ review['v_note'] }}">
+            {{ review['verified'] }}
+        </td>
+        <td class="dataCell {{ review['w_note'] }}">
+            {{ review['workflow'] }}
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+</div>
 </body>
 </html>

@@ -41,7 +41,7 @@ def _get_title(fname):
     return title, foreach
 
 
-def _get_sections(fname):
+def _get_sections(fname, extra_foreach=None):
     sections = []
     sname = None
     for line in fileinput.input(fname):
@@ -52,7 +52,8 @@ def _get_sections(fname):
             m = re.match("query = (.+)", line)
             if m:
                 query = _escape_comma(m.group(1))
-
+                if extra_foreach:
+                    query += extra_foreach
                 sections.append({'title': sname, 'query': query})
     fileinput.close()
     return sections
@@ -81,3 +82,9 @@ def gerrit_dashboard(dash, extra_foreach=None):
     sections = _get_sections(dash)
     url = _gen_url(title, foreach, sections)
     return url
+
+
+def dashboard(dash, extra_foreach=None):
+    title, foreach = _get_title(dash)
+    sections = _get_sections(dash, extra_foreach)
+    return (title, sections)
