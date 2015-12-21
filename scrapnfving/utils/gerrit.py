@@ -65,3 +65,10 @@ class GerritAPI(object):
     def get_search_url(self, query):
         qs = urllib.parse.quote_plus(query, ':()')
         return urllib.parse.urljoin(CONF.gerrit.url, '/#/q/%s,n,z' % qs)
+
+    def get_account(self, account_id):
+        response = self._request(path='/accounts/%s/name' % account_id)
+        #NOTE: JSON response from Gerrit is malformed
+        response = response.split('\n', 1)[1]
+        # Returned value has a leading/trailing quote to drop
+        return response[1:-2]
