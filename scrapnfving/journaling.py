@@ -68,9 +68,9 @@ class Journaler(object):
         review = {}
         review['subject'] = change['subject'] if len(change['subject']) <= 72 \
             else change['subject'][:72] + '...'
-        review['owner'] = change['owner']['name']
+        review['owner'] = self.gerrit_api.get_account(change['owner']['_account_id'])
         review['owner_url'] = self.gerrit_api.get_search_url(
-            'owner:"'+change['owner']['name'].encode('utf-8')+'" status:open')
+            'owner:"'+str(change['owner']['_account_id'])+'" status:open')
         review['project'] = change['project']
         topic = " (%s)" % change['topic'] if 'topic' in change else ''
         review['branch'] = "%(b)s%(t)s" % {'b': change['branch'],

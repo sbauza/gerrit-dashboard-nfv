@@ -70,7 +70,8 @@ class Scraper(html_parser.HTMLParser, object):
             if self._marker_pos != 0 and self._marker_pos == self._td_offset:
                 # There is only one href attribute
                 url = [value for (name, value) in attrs if name == 'href'][0]
-                self.urls.add(url)
+                if url.find("blueprints.launchpad.net") >= 0:
+                    self.urls.add(url)
 
     def handle_endtag(self, tag):
         if tag == 'th':
